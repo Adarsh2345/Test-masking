@@ -1,4 +1,4 @@
-# SharePoint Word Document Masking Tool
+#  SharePoint Word Document Masking Tool
 
 This Python tool downloads Word documents (`.docx`) from a specified SharePoint folder using Microsoft Graph API, processes each document to mask sensitive content asynchronously via a Mask API, and outputs the masked text while preserving paragraph structure. It also supports archiving or deleting processed files and logs its operations.
 
@@ -17,6 +17,8 @@ This Python tool downloads Word documents (`.docx`) from a specified SharePoint 
 
 ---
 
+
+
 ## Prerequisites
 
 - Python 3.7+
@@ -33,6 +35,16 @@ pip install msal requests python-docx
 
 ```
 
+##  Registration
+
+To use Protecto's data protection and masking services, you need to register an account:
+
+1. Visit the [Protecto Portal](https://portal.protecto.ai/).
+2. Click on **Sign Up** and complete the registration form with your email and other details.
+3. Once registered, log in to access your dashboard, generate API tokens, create policies, and manage your masking/unmasking operations.
+
+> 💡 Note: Keep your API token secure. It will be used to authenticate your requests to the Protecto API.
+
 ## Permissions Required
 
 To enable the script to access SharePoint files and authenticate properly, your Azure AD application must be granted the following **Application permissions**:
@@ -40,7 +52,7 @@ To enable the script to access SharePoint files and authenticate properly, your 
 | Permission               | Description                                    | Scope Type           |
 |--------------------------|------------------------------------------------|---------------------|
 | `Sites.Read.All`         | Read items in all site collections without a signed-in user. | Application (App-only) |
-| `Files.Read.All`         | Read all files that the signed-in user can access. | Application (App-only) |
+| `Files.Read.All` *(optional)* | Read all files that the signed-in user can access. | Application (App-only) |
 
 > **Note:** These permissions require **admin consent** in Azure AD to be granted.
 
@@ -90,41 +102,41 @@ SITE_URL — Optional, not used in current script but reserved for SharePoint si
 ```
 ### Arguments
 
---config_path (required): Path to the configuration file.
+`--config_path (required)`: Path to the configuration file.
 
---onedrive_folder (required): Name of the OneDrive folder inside the root directory to download files from.
+`--onedrive_folder (required)`: Name of the OneDrive folder inside the root directory to download files from.
 
---local_download_dir (required): Local directory where downloaded Word files will be saved.
+`--local_download_dir (required)`: Local directory where downloaded Word files will be saved.
 
---output_dir (required): Directory to save masked text output files.
+`--output_dir (required)`: Directory to save masked text output files.
 
---log_file_path (optional): File path to save logs with daily rotation. Defaults to console logging.
+`--log_file_path (optional)`: File path to save logs with daily rotation. Defaults to console logging.
 
---archive_dir (optional): Directory to move processed Word files after masking. If not specified, original files are deleted.
+`--archive_dir (optional)`: Directory to move processed Word files after masking. If not specified, original files are deleted.
 
---word_limit (optional): Maximum number of words per chunk for masking API calls. Default is 500.
+`--word_limit (optional)`: Maximum number of words per chunk for masking API calls. Default is 500.
 
 ## How it works
 
-Authentication: The script uses Azure AD app credentials to obtain an access token for Microsoft Graph API.
+`Authentication`: The script uses Azure AD app credentials to obtain an access token for Microsoft Graph API.
 
-File Listing & Download: Lists all files in the specified OneDrive folder and downloads .docx files to a local directory.
+`File Listing & Download`: Lists all files in the specified OneDrive folder and downloads .docx files to a local directory.
 
-Paragraph Processing: Loads each Word file and splits paragraphs into chunks if they exceed the word_limit.
+`Paragraph Processing`: Loads each Word file and splits paragraphs into chunks if they exceed the word_limit.
 
-Masking API Calls: Sends each chunk to the Protecto Mask API asynchronously, collecting tracking IDs.
+`Masking API Calls`: Sends each chunk to the Protecto Mask API asynchronously, collecting tracking IDs.
 
-Polling Status: Periodically polls the API for masking results and writes masked text chunks in order, preserving paragraph breaks.
+`Polling Status`: Periodically polls the API for masking results and writes masked text chunks in order, preserving paragraph breaks.
 
-Post-processing: Moves or deletes the original Word files as configured.
+`Post-processing`: Moves or deletes the original Word files as configured.
 
-Logging: Logs progress, errors, and API responses.
+`Logging`: Logs progress, errors, and API responses.
 
 ## Logging
 
 By default, logs print to the console.
 
-Use --log_file_path to enable rotating log files (rotates daily, keeps 7 days).
+Use `--log_file_path` to enable rotating log files (rotates daily, keeps 7 days).
 
 Log format includes timestamps, log levels, and messages.
 
@@ -138,13 +150,13 @@ Invalid or empty paragraphs are handled gracefully to preserve formatting.
 
 ## Dependencies
 
-msal: For Microsoft identity platform authentication.
+`msal`: For Microsoft identity platform authentication.
 
-requests: For HTTP requests.
+`requests`: For HTTP requests.
 
-python-docx: For Word document processing.
+`python-docx`: For Word document processing.
 
-Python standard libraries: os, time, logging, shutil, argparse, json.
+`Python standard libraries`: os, time, logging, shutil, argparse, json.
 
 ## Notes
 
